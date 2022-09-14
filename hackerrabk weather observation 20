@@ -1,0 +1,33 @@
+problem link: https://www.hackerrank.com/challenges/weather-observation-station-20/problem 
+        status :accepted
+        problem name:Weather Observation Station 20*/
+        
+   /* A median is defined as a number separating the higher half of a data set from the lower half. 
+   Query the median of the Northern Latitudes (LAT_N) from STATION and round your answer to  decimal places.
+   
+   Input Format Using the table STATION*/
+   
+   Method 1:-
+   
+   with median as
+   (select lat_n,row_number () over(order by lat_n) as rowlat,count(*) over () as cnt
+   from station
+   
+   )
+   
+   select round (avg (lat_n),4)
+   from median
+   where mod(cnt,2)= 0 AND rowlat IN ((cnt/2), ((cnt/2)+1)) OR
+         mod(cnt,2) =1 AND rowlat = floor(cnt/2)+1;
+         
+         
+    Method 2:
+    
+    with median as
+    (select lat_n,row_number() over(order by lat_n) as row_asc,row_number() over (order by lat_n desc) as row_desc
+    from station
+    
+    )
+    select round(avg(lat_n)::numeric,4)    /* Line no 31- you can also use round(cast(avg(lat_n) as numeric),4)*/
+    from median 
+    where abs(row_asc - row_desc) <= 1

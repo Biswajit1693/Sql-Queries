@@ -1,0 +1,54 @@
+Problem Link - https://www.hackerrank.com/challenges/placements/problem?isFullScreen=true
+      status :accepted
+
+/* You are given three tables: Students, Friends and Packages. Students contains two columns: ID and Name. 
+Friends contains two columns: ID and Friend_ID (ID of the ONLY best friend). 
+Packages contains two columns: ID and Salary (offered salary in $ thousands per month)*/
+
+Solution- Creating,Inserting and Quering Table
+
+create table students (ID SERIAL PRIMARY KEY,NAME TEXT)
+create table friends (ID SERIAL PRIMARY KEY,FRIEND_ID INT)
+create table packages (ID SERIAL PRIMARY KEY,SALARY FLOAT)
+
+INSERT INTO STUDENTS VALUES
+(1,'Ashley'),
+(2,'Samantha'),
+(3,'Julia'),
+(4,'Scarlet');
+
+INSERT INTO friends VALUES
+(1,2),
+(2,3),
+(3,4),
+(4,1);
+INSERT INTO packages VALUES
+(1,15.20),
+(2,10.06),
+(3,11.55),
+(4,12.12);
+select * from students
+select * from friends
+select * from packages
+
+with a as
+(select s.id,s.name,f.friend_id
+from students as s
+join friends as f
+on f.id = s.id
+),b as
+(select a.id,a.name,a.friend_id,p.salary as s1,s.name as bst from a
+join students as s
+on a.friend_id = s.id
+join packages as p
+on a.id = p.id
+),c as
+(select b.*,p.salary as s2
+from b
+join packages as p
+on b.friend_id = p.id
+ )
+ 
+select name from c
+where s1<s2
+order by c.s2
